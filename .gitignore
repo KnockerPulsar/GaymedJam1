@@ -1,0 +1,13 @@
+
+*.meta
+Library/
+Temp/
+*.cache
+Packages/packages-lock.json
+Packages/manifest.json
+Logs/Packages-Update.log
+Assets/Sunnyland/artwork/Environment/back.png.meta
+*.meta
+*.asset
+*.txt
+.vsconfig
