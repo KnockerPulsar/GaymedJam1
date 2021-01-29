@@ -56,7 +56,9 @@
     <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Movable.cs" />
     <Compile Include="Assets\Scripts\CollectController.cs" />
+    <Compile Include="Assets\Scripts\Telekinesis.cs" />
     <Compile Include="Assets\Scripts\GhostController.cs" />
     <Compile Include="Assets\Scripts\Enemy.cs" />
     <Compile Include="Assets\Scripts\FrogController.cs" />
@@ -64,8 +66,6 @@
     <Compile Include="Assets\Scripts\PlayerController.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\Mummy.cs" />
-    <Compile Include="Assets\Scripts\Telekinesis.cs" />
-    <Compile Include="Assets\Movable.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

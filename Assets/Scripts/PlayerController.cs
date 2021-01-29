@@ -8,9 +8,10 @@ public class PlayerController : MonoBehaviour
     public float jumpForce = 7;
     public float hMovementSpeed = 7;
     public float HurtForce = 3;
+    public Transform feet;
     private enum State { idle, running, jumping, falling, hurt }
     private State currentstate = State.running;
-    private BoxCollider2D BoxCollider2D;
+    private Collider2D BoxCollider2D;
     Rigidbody2D playerRB;
     Animator playerAnimator;
     [SerializeField] private LayerMask GroundMask;
@@ -18,7 +19,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        BoxCollider2D = GetComponent<BoxCollider2D>();
+        BoxCollider2D = GetComponent<Collider2D>();
         playerRB = GetComponent<Rigidbody2D>();
         playerAnimator = GetComponent<Animator>();
     }
@@ -29,6 +30,7 @@ public class PlayerController : MonoBehaviour
             MovementController();
         StateController();
         playerAnimator.SetInteger("state", (int)currentstate);
+        CheckSlope();
     }
 
     private void MovementController()
@@ -124,6 +126,21 @@ public class PlayerController : MonoBehaviour
                     playerRB.velocity = new Vector2(HurtForce, playerRB.velocity.x);
                 }
             }
+        }
+    }
+
+    void CheckSlope()
+    {
+        if (!Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.D))
+            return;
+
+        RaycastHit2D hit = Physics2D.Raycast(feet.position, playerRB.velocity.normalized, 0.4f, GroundMask);
+        Debug.DrawRay(feet.position, playerRB.velocity.normalized, Color.blue, 1f);
+
+        if (hit && hit.normal != Vector2.right && hit.normal != Vector2.up && hit.normal != Vector2.left)
+        {
+            Debug.DrawRay(hit.point, -Vector2.Perpendicular(hit.normal), Color.red, 1f);
+            playerRB.velocity = -Vector2.Perpendicular(hit.normal) * hMovementSpeed;
         }
     }
 }

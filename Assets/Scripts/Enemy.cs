@@ -4,15 +4,27 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public void DeathAnimation()
+    public GameObject parentGO;
+    public virtual void DeathAnimation()
     {
-        this.GetComponent<Animator>().SetTrigger("Death");
-        this.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
-        this.GetComponent<BoxCollider2D>().isTrigger = true;
+        Animator animator = GetComponent<Animator>();
+        Rigidbody2D rigidbody2D = GetComponent<Rigidbody2D>();
+        Collider2D collider2D = GetComponent<Collider2D>();
+
+        if (animator)
+            animator.SetTrigger("Death");
+        if (rigidbody2D)
+            rigidbody2D.velocity = Vector2.zero;
+        if (collider2D)
+            collider2D.isTrigger = true;
     }
 
     public void Death()
     {
-        Destroy(this.gameObject);
+        // In case we need the enemy to have a parent like the ghost, deleting the parent should delete the child
+        if (parentGO)
+            Destroy(parentGO);
+        else
+            Destroy(gameObject);
     }
 }

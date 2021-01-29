@@ -4,80 +4,43 @@ using UnityEngine;
 
 public class GhostController : Enemy
 {
-    private enum Dirctions { Right,Left,Up,Down}
-    private float leftcap;
-    private float rightcap;
-    private float upcap;
-    private float downcap;
-    private float speed = 3f;
-    private Dirctions sidesdirection = Dirctions.Left;
-    private Dirctions floatingdircetion = Dirctions.Up;
+    public float speed = 3f;
+    public float distanceThreshold = 0.2f;
+    public Transform[] waypoints;
+
+    int currPathIndex = 0;
+    int nextPathIndex = 1;
+    float time = 0;
 
     void Start()
     {
-        leftcap = transform.position.x - 8;
-        rightcap = transform.position.x + 8;
-        upcap = transform.position.y + 3;
-        downcap = transform.position.y - 3;
+        currPathIndex = 0;
     }
 
-    void Update()
+    void FixedUpdate()
     {
         GhostMoveController();
     }
 
     private void GhostMoveController()
     {
-        if (sidesdirection==Dirctions.Left)
+        float dist = Vector2.Distance(waypoints[currPathIndex].position, waypoints[nextPathIndex].position);
+        time += Time.deltaTime * speed / dist;
+        transform.position = Vector3.Lerp(waypoints[currPathIndex].position, waypoints[nextPathIndex].position, time);
+        if (time >= 1)
         {
-            if (transform.position.x > leftcap)
-            {
-                if (transform.localScale.x != 1)
-                    transform.localScale = new Vector3(1, 1);
-
-                if (floatingdircetion==Dirctions.Up)
-                    gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(-speed, speed);
-                else
-                    gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(-speed, -speed);
-            }
-            else
-            {
-                sidesdirection = Dirctions.Right;
-            }
+            time = 0;
+            currPathIndex++;
+            nextPathIndex++;
+            if (currPathIndex == waypoints.Length) currPathIndex = 0;
+            if (nextPathIndex == waypoints.Length) nextPathIndex = 0;
         }
-        else
-        {
-            if (transform.position.x < rightcap)
-            {
-                if (transform.localScale.x != -1)
-                    transform.localScale = new Vector3(-1, 1);
+    }
 
-                if (floatingdircetion == Dirctions.Up)
-                    gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(speed, speed);
-                else
-                    gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(speed, -speed);
-
-
-            }
-            else
-            {
-                sidesdirection = Dirctions.Left;
-            }
-        }
-
-        if (floatingdircetion==Dirctions.Up)
-        {
-            if (transform.position.y > upcap)
-            {
-                floatingdircetion = Dirctions.Down;
-            }
-        }
-        else
-        {
-            if (transform.position.y < downcap)
-            {
-                floatingdircetion = Dirctions.Up;
-            }
-        }
+    public override void DeathAnimation()
+    {
+        // To stop the enemy from moving after death
+        speed = 0;
+        base.DeathAnimation();
     }
 }
